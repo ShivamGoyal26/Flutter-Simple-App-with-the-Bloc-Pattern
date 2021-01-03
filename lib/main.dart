@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Increment Or Decrement'),
     );
   }
 }
@@ -29,7 +29,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   final counterBloc = CounterBloc();
 
   @override
@@ -47,10 +46,11 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             StreamBuilder(
+              initialData: 0,
               stream: counterBloc.counterStream,
               builder: (context, snapshot) {
                 return Text(
-                  '$_counter',
+                  '${snapshot.data}',
                   style: Theme.of(context).textTheme.headline4,
                 );
               },
@@ -58,13 +58,37 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _counter++;
-          counterBloc.counterSink.add(_counter);
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.Increment);
+            },
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.Decrement);
+            },
+            tooltip: 'Decrement',
+            child: Icon(Icons.minimize),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.Reset);
+            },
+            tooltip: 'Reset',
+            child: Icon(Icons.loop),
+          ),
+        ],
       ),
     );
   }
